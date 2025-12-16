@@ -106,7 +106,6 @@ func Update(id int, description string) {
 				}
 			default:
 			}
-
 			if found {
 				break
 			}
@@ -189,4 +188,53 @@ func MarkedFunction(id int, status string) {
 	}
 
 	fmt.Println("Invalid json")
+}
+
+func DeleteTask(id int) {
+	data, err := os.ReadFile("task.json")
+	if err != nil {
+		fmt.Println("Error while Reading the file")
+	}
+
+	var arr []map[string]interface{}
+	json.Unmarshal(data, &arr)
+	var ind int = -1
+	for index, obj := range arr {
+		if v, ok := obj["id"]; ok {
+			switch val := v.(type) {
+			case float64:
+				if int(val) == id {
+					ind = index
+				}
+			case int:
+				if int(val) == id {
+					ind = index
+				}
+			}
+			if ind != -1 {
+				break
+			}
+		}
+	}
+	if ind == -1 {
+		fmt.Println("Not found")
+		return
+	}
+	deleteTask := arr[ind : ind+1]
+	arr = append(arr[:ind], arr[ind+1:]...)
+
+	file, err := json.MarshalIndent(arr, "", "\t")
+	if err != nil {
+		fmt.Println("Error in converting to json")
+	}
+	if !json.Valid(file) {
+		fmt.Println("Json file is not valid")
+		return
+	}
+	err = os.WriteFile("task.json", file, 0644)
+	if err != nil {
+		fmt.Println("Unsuccesful file writing")
+		return
+	}
+	fmt.Println("Delete Sucessful", deleteTask)
 }

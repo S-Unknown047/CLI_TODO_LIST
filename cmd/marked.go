@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 	database "github/subham/CLI_TODO/Database"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -32,7 +33,11 @@ func marked(cmd *cobra.Command, args []string) {
 	fmt.Println("marked called")
 	fmt.Println("Value ", val)
 	fmt.Println("Flag \n\n", id)
-
+	newStatus := strings.ToLower(val)
+	if newStatus != "todo" && newStatus != "done" && newStatus != "in-progress" {
+		fmt.Printf("Entered Wrong Flag Value Flag Values can be only\n 1) done  if task is complete \n2) todo if task is not yet started\n3) in-progress if task is in progress")
+		return
+	}
 	database.MarkedFunction(id, val)
 
 }

@@ -1,11 +1,11 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+	database "github/subham/CLI_TODO/Database"
 
 	"github.com/spf13/cobra"
 )
@@ -13,28 +13,21 @@ import (
 // deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("delete called")
-	},
+	Short: "this is delete cmd ",
+	Long:  `this is to delete by id give by user for flag -i`,
+	Run:   Delete,
 }
 
 func init() {
 	rootCmd.AddCommand(deleteCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// deleteCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// deleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	deleteCmd.Flags().IntP("id", "i", 0, "gives id as the flag")
+	deleteCmd.MarkFlagRequired("id")
+}
+func Delete(cmd *cobra.Command, args []string) {
+	id, err := cmd.Flags().GetInt("id")
+	if err != nil {
+		fmt.Println("Error getting Flag value")
+		return
+	}
+	database.DeleteTask(id)
 }

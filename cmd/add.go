@@ -48,6 +48,7 @@ func AddCmd(cmd *cobra.Command, args []string) {
 
 	if newStatus != "todo" && newStatus != "done" && newStatus != "in-progress" {
 		fmt.Printf("Entered Wrong Flag Value Flag Values can be only\n 1) done  if task is complete \n2) todo if task is not yet started\n3) in-progress if task is in progress")
+		return
 	}
 
 	structValue := model.Task{Description: value, Status: newStatus, CreatedAt: time.Now(), UpdatedAt: time.Now()}
