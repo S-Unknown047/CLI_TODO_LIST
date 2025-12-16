@@ -14,8 +14,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var no int
-
 // addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
@@ -26,7 +24,7 @@ var addCmd = &cobra.Command{
 }
 
 func init() {
-	no = 1
+
 	addCmd.Flags().StringP(
 		"status",
 		"f",
@@ -52,8 +50,8 @@ func AddCmd(cmd *cobra.Command, args []string) {
 		fmt.Printf("Entered Wrong Flag Value Flag Values can be only\n 1) done  if task is complete \n2) todo if task is not yet started\n3) in-progress if task is in progress")
 	}
 
-	structValue := model.Task{Id: no, Description: value, Status: newStatus, CreatedAt: time.Now(), UpdatedAt: time.Now()}
-	no++
+	structValue := model.Task{Description: value, Status: newStatus, CreatedAt: time.Now(), UpdatedAt: time.Now()}
+
 	fmt.Println("Calling Add function")
 	err = database.Add(structValue)
 	if err != nil {
