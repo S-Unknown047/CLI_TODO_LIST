@@ -4,36 +4,34 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
+	database "github/subham/CLI_TODO/Database"
+
 	"github.com/spf13/cobra"
 )
 
 // updateCmd represents the update command
 var updateCmd = &cobra.Command{
 	Use:   "update",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Args: cobra.ExactArgs(1),
-	Run:  update,
+	Short: "This id Update Functo",
+	Long:  `We will pass an id the id of task and an string represents the Updated task name `,
+	Args:  cobra.ExactArgs(1),
+	Run:   update,
 }
 
 func init() {
+	updateCmd.Flags().IntP("id", "i", 0, "This gives the id of the task to update")
+	updateCmd.MarkFlagRequired("id")
 	rootCmd.AddCommand(updateCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// updateCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// updateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-func update(cmd *cobra.Command, args []string) {
 
+func update(cmd *cobra.Command, args []string) {
+	value := args[0]
+	_id, err := cmd.Flags().GetInt("id")
+	if err != nil {
+		fmt.Println("Error in getting flag")
+	}
+	fmt.Println("vlue ", value)
+	fmt.Println("flag ", _id)
+	database.Update(_id, value)
 }

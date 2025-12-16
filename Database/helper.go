@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github/subham/CLI_TODO/model"
 	"os"
+	"time"
 )
 
 func Add(task model.Task) error {
@@ -73,23 +74,65 @@ func Add(task model.Task) error {
 	return nil
 }
 
-// func Update(id int) error{
-// 	data, err := os.ReadFile("../task.json")
-// 	if err != nil {
-// 		fmt.Println("Error in Reading File")
-// 		return err
-// 	}
-// 	var val map[string]interface{}
-// 	valid := json.Valid(data)
-//     if valid{
-// 		err:=json.Unmarshal(data,&val)
-// 		if err!=nil{
-// 			fmt.Println("Error in converting File ",err)
-// 			return err
-// 		}
-// 	}
-// }
+func Update(id int, description string) {
+	data, err := os.ReadFile("task.json")
+	if err != nil {
+		fmt.Println("Error in Reading File")
+		return
+	}
+	// Read file
 
-// func Delete() {
+	var arr []map[string]interface{}
+	if err := json.Unmarshal(data, &arr); err != nil {
+		fmt.Println("Error parsing JSON:", err)
+		return
+	}
+	fmt.Println("jason :=", arr)
+	found := false
+	for _, obj := range arr {
+		if v, ok := obj["id"]; ok {
+			fmt.Println("ID for traveral ", v, id)
 
-// }
+			switch val := v.(type) {
+			case float64:
+				if int(val) == id {
+					obj["description"] = description
+					obj["updatedAt"] = time.Now().Format(time.RFC3339)
+					found = true
+				}
+			case int:
+				if val == id {
+					obj["description"] = description
+					obj["updatedAt"] = time.Now().Format(time.RFC3339)
+					found = true
+				}
+			default:
+			}
+
+			if found {
+				break
+			}
+		}
+	}
+
+	if !found {
+		fmt.Println("Task id  not Found")
+		return
+	}
+	filejson, err := json.MarshalIndent(arr, "", "\t")
+	if err != nil {
+		fmt.Println("Error in converting To json ", err)
+		return
+	}
+
+	if json.Valid(filejson) {
+		fmt.Println("Valid Json : \n", string(filejson))
+		// persist changes
+		if err := os.WriteFile("task.json", filejson, 0644); err != nil {
+			fmt.Println("Error writing file:", err)
+			return
+		}
+	} else {
+		fmt.Println("Not valid json")
+	}
+}
