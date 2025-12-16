@@ -87,12 +87,10 @@ func Update(id int, description string) {
 		fmt.Println("Error parsing JSON:", err)
 		return
 	}
-	fmt.Println("jason :=", arr)
 	found := false
 	for _, obj := range arr {
 		if v, ok := obj["id"]; ok {
 			fmt.Println("ID for traveral ", v, id)
-
 			switch val := v.(type) {
 			case float64:
 				if int(val) == id {
@@ -135,4 +133,60 @@ func Update(id int, description string) {
 	} else {
 		fmt.Println("Not valid json")
 	}
+}
+
+func MarkedFunction(id int, status string) {
+	data, err := os.ReadFile("task.json")
+	if err != nil {
+		fmt.Println("Error in reading file", err)
+		return
+	}
+
+	var arr []map[string]interface{}
+	err = json.Unmarshal(data, &arr)
+	if err != nil {
+		fmt.Println("Error in parsing json", err)
+		return
+	}
+	found := false
+	for _, obj := range arr {
+		if v, ok := obj["id"]; ok {
+			switch val := v.(type) {
+			case float64:
+				if int(val) == id {
+					obj["Status"] = status
+					obj["updateAt"] = time.Now()
+					found = true
+				}
+			case int:
+				if val == id {
+					obj["Status"] = status
+					obj["updateAt"] = time.Now()
+					found = true
+				}
+			default:
+			}
+
+			if found {
+				break
+			}
+		}
+	}
+	if !found {
+		fmt.Println("Not found")
+		return
+	}
+
+	jsonFile, err := json.MarshalIndent(arr, "", "\t")
+
+	if err != nil {
+		fmt.Println("Error in Unmarshall")
+		return
+	}
+
+	if json.Valid(jsonFile) {
+		os.WriteFile("task.json", jsonFile, 0644)
+	}
+
+	fmt.Println("Invalid json")
 }
