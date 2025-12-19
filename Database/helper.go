@@ -82,7 +82,7 @@ func Update(id int, description string) {
 	}
 	// Read file
 
-	var arr []map[string]interface{}
+	var arr []map[string]any
 	if err := json.Unmarshal(data, &arr); err != nil {
 		fmt.Println("Error parsing JSON:", err)
 		return
@@ -141,7 +141,7 @@ func MarkedFunction(id int, status string) {
 		return
 	}
 
-	var arr []map[string]interface{}
+	var arr []map[string]any
 	err = json.Unmarshal(data, &arr)
 	if err != nil {
 		fmt.Println("Error in parsing json", err)
@@ -196,7 +196,7 @@ func DeleteTask(id int) {
 		fmt.Println("Error while Reading the file")
 	}
 
-	var arr []map[string]interface{}
+	var arr []map[string]any
 	json.Unmarshal(data, &arr)
 	var ind int = -1
 	for index, obj := range arr {
@@ -237,4 +237,71 @@ func DeleteTask(id int) {
 		return
 	}
 	fmt.Println("Delete Sucessful", deleteTask)
+}
+
+func Listing(status string) {
+	file, err := os.ReadFile("task.json")
+	if err != nil {
+		fmt.Println("Error In Reading File")
+	}
+	var arr []map[string]any
+	json.Unmarshal(file, &arr)
+	fmt.Println("\tid\t|\t\t\tTask\t\t\t|\tStatus\t|\tDate Of assign\t|\tLast Update")
+	if status == "all" {
+		for _, obj := range arr {
+			if val, ok := obj["id"]; ok {
+				fmt.Print("\t", val, "\t")
+				fmt.Print("\t\t\t", obj["description"], "\t\t\t")
+				fmt.Print("\t", obj["Status"], "\t")
+				fmt.Print("\t", obj["createdAt"], "\t")
+				fmt.Print("\t", obj["updatedAt"], "\n")
+			}
+		}
+	}
+
+	if status == "done" {
+		for _, obj := range arr {
+			if val, ok := obj["id"]; ok {
+				if obj["Status"] == "done" {
+					fmt.Print("\t", val, "\t")
+					fmt.Print("\t\t\t", obj["description"], "\t\t\t")
+					fmt.Print("\t", obj["Status"], "\t")
+					fmt.Print("\t", obj["createdAt"], "\t")
+					fmt.Print("\t", obj["updatedAt"], "\n")
+				}
+			}
+		}
+
+	}
+
+	if status == "todo" {
+		for _, obj := range arr {
+			if val, ok := obj["id"]; ok {
+				if obj["Status"] == "todo" {
+					fmt.Print("\t", val, "\t")
+					fmt.Print("\t\t\t", obj["description"], "\t\t\t")
+					fmt.Print("\t", obj["Status"], "\t")
+					fmt.Print("\t", obj["createdAt"], "\t")
+					fmt.Print("\t", obj["updatedAt"], "\n")
+				}
+			}
+		}
+
+	}
+
+	if status == "in-progress" {
+		for _, obj := range arr {
+			if val, ok := obj["id"]; ok {
+				if obj["Status"] == "in-progress" {
+					fmt.Print("\t", val, "\t")
+					fmt.Print("\t\t\t", obj["description"], "\t\t\t")
+					fmt.Print("\t", obj["Status"], "\t")
+					fmt.Print("\t", obj["createdAt"], "\t")
+					fmt.Print("\t", obj["updatedAt"], "\n")
+				}
+			}
+		}
+
+	}
+
 }
